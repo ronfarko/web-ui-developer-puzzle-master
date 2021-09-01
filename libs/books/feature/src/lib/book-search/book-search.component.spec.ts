@@ -11,7 +11,7 @@ describe('ProductsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule]
+      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule],
     }).compileComponents();
   }));
 
@@ -23,5 +23,20 @@ describe('ProductsListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeDefined();
+  });
+
+  it('should return U.S. date string', () => {
+    const date = component.formatDate('2012-01-01T00:00:00.000Z');
+    expect(date).toBe('12/31/2011');
+  });
+
+  it('should return undefined date', () => {
+    const date = component.formatDate(null);
+    expect(date).toBeUndefined();
+  });
+
+  it('should set the search example', () => {
+    component.searchExample();
+    expect(component.searchForm.get('term').value).toBe('javascript');
   });
 });

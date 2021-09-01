@@ -1,4 +1,4 @@
-@import 'variables.scss';
+@import "variables.scss";
 
 form {
   margin-bottom: $spacing-xs;
@@ -68,5 +68,12 @@ form {
   justify-content: center;
   min-height: 50vh;
   font-size: 1.5rem;
-  color: $gray40;
+  color: $gray60;
+}
+
+.example--button {
+  cursor: pointer;
+  color: #ff4081;
+  font-size: 24px;
+  padding: 0;
 }
