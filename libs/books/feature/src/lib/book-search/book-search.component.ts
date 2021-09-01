@@ -4,26 +4,29 @@ import {
   addToReadingList,
   clearSearch,
   getAllBooks,
-  searchBooks,
+  removeFromReadingList,
+  searchBooks
 } from '@tmo/books/data-access';
 import { FormBuilder } from '@angular/forms';
 import { Book } from '@tmo/shared/models';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tmo-book-search',
   templateUrl: './book-search.component.html',
-  styleUrls: ['./book-search.component.scss'],
+  styleUrls: ['./book-search.component.scss']
 })
 export class BookSearchComponent {
   books$ = this.store.select(getAllBooks);
 
   searchForm = this.fb.group({
-    term: '',
+    term: ''
   });
 
   constructor(
     private readonly store: Store,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {}
 
   get searchTerm(): string {
@@ -37,7 +40,33 @@ export class BookSearchComponent {
   }
 
   addBookToReadingList(book: Book): void {
+    // add the book to the reading list
     this.store.dispatch(addToReadingList({ book }));
+
+    // show snackbar with undo action
+    // prefered way: add a common service for snackbar in shared module and reuse it
+    const snakbar = this.snackBar.open(
+      `Added "${book.title}" to the Reading List`,
+      'UNDO',
+      {
+        duration: 3000,
+        verticalPosition: 'bottom'
+      }
+    );
+
+    // remove the book from the reading list if UNDO selected
+    snakbar.afterDismissed().subscribe((status) => {
+      if (status.dismissedByAction) {
+        this.store.dispatch(
+          removeFromReadingList({
+            item: {
+              ...book,
+              bookId: book.id
+            }
+          })
+        );
+      }
+    });
   }
 
   searchExample(): void {
